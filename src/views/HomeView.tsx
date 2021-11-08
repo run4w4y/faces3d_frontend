@@ -3,12 +3,15 @@ import { useModel, useWebcam, usePredictions, PredictionsRes } from '../hooks';
 import { Header, StyledSwitch, SelectInputStream, CirclesSVG } from '../components';
 import config from '../config';
 import { circleSegments } from '../model/util';
+import fileDownload from 'js-file-download';
 
 
 export const HomeView: React.FC = () => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     
+    const [ userReady, setUserReady ] = useState(false);
+
     const [ mirrored, setMirrored ] = useState(false);
     const [ activeDeviceId, setActiveDeviceId ] = useState<string | null>(null);
 
@@ -26,6 +29,11 @@ export const HomeView: React.FC = () => {
     const [ strokes, setStrokes ] = useState<string[]>([]);
     const [ frameCount, setFrameCount ] = useState(0);
     const [ ts, setTs ] = useState<number | null>(null);
+
+    const [ startedRecording, setStartedRecording ] = useState(false);
+    const [ stoppedRecording, setStoppedRecording ] = useState(false);
+    const [ mediaRecorder, setMediaRecorder ] = useState<MediaRecorder | null>(null);
+    const [ recordedBlobs, setRecordedBlobs ] = useState<Blob[]>([]);
 
     const updateCircleProps = (prediction?: PredictionsRes | null) => {
         if (!prediction)
@@ -113,7 +121,18 @@ export const HomeView: React.FC = () => {
             ctx.arc(x, y, 1 /* radius */, 0, 2 * Math.PI);
             ctx.fill();
         });
-    }
+    };
+
+    const checkDone = () => {
+        if (!segmentsRef.current)
+            return false;
+        
+        return Array.from(segmentsRef.current.values()).every(x => x);
+    };
+
+    const downloadVideo = () => {
+        fileDownload(new Blob(recordedBlobs, { type: 'video/webm' }), 'video.webm');
+    };
 
     const updatePredictions = async () => {
         const res = await calcPrediction();
@@ -122,26 +141,68 @@ export const HomeView: React.FC = () => {
             updateCircleProps(res);
             updateLandmarks(res);
             setFrameCount(prev => prev + 1);
-            requestAnimationFrame(updatePredictions);
+            
+            if (!checkDone())
+                requestAnimationFrame(updatePredictions);
+            else 
+                setStoppedRecording(true);
         }
-    }
+    };
 
     useEffect(() => {
-        setTimeout(updatePredictions, 1500);
-    }, [streamLoaded]);
+        if (userReady && streamLoaded)
+            setTimeout(updatePredictions, 1500);
+    }, [streamLoaded, userReady]);
+
+    useEffect(() => {
+        if (ts !== null && !startedRecording)
+            setStartedRecording(true);
+    }, [ts]);
+
+    useEffect(() => {
+        if (startedRecording)
+            setMediaRecorder(new MediaRecorder(webcamRef.current!.stream!, { mimeType: 'video/webm' }));
+    }, [startedRecording]);
+
+    useEffect(() => {
+        if (stoppedRecording) {
+            mediaRecorder?.stop();
+            setTimeout(downloadVideo, 1000);
+        }
+    }, [stoppedRecording]);
+
+    useEffect(() => {
+        mediaRecorder?.addEventListener('dataavailable', (e) => {
+            setRecordedBlobs(prev => [ ...prev, e.data ]);
+        });
+
+        mediaRecorder?.start(1000);
+    }, [mediaRecorder]);
 
     if (!videoInputs || videoInputs.length === 0)
         return <span> No video input devices were found :( </span>;
 
-
-    // console.log(strokes);
     return (
         <div className="grid grid-cols-2 auto-rows-fr rounded overflow-hidden text-sm">
             <div className="lg:col-span-1 col-span-2 relative">
-                <div ref={containerRef}> { webcamElement } </div>
-                <div className="w-full z-10 absolute top-0 left-0">
-                    <canvas ref={canvasRef} />
-                </div>
+                {
+                    userReady ?
+                    <>
+                    <div ref={containerRef}> { webcamElement } </div>
+                    <div className="w-full z-10 absolute top-0 left-0">
+                        <canvas ref={canvasRef} />
+                    </div>
+                    </>
+                    :
+                    <div 
+                        className="w-full h-full bg-gray-600 text-gray-100 flex items-center justify-center cursor-pointer"
+                        onClick={() => setUserReady(true)}
+                    >
+                        <div>
+                            <Header size="sm"> Click here when you're ready </Header>
+                        </div>
+                    </div>
+                }
             </div>
             <div 
                 className="lg:col-span-1 col-span-2 bg-gray-100 p-6 relative overflow-y-scroll"
@@ -154,6 +215,7 @@ export const HomeView: React.FC = () => {
                         <SelectInputStream 
                             inputs={videoInputs}
                             setSelectedInput={(item: MediaDeviceInfo) => setActiveDeviceId(item.deviceId)}
+                            disabled={userReady}
                         />
                     </li>
                     <li key="mirroredSwitch">
@@ -166,6 +228,7 @@ export const HomeView: React.FC = () => {
                                     defaultEnabled 
                                     onChange={setMirrored}
                                     size={20} 
+                                    disabled={userReady}
                                 />
                             </li>
                         </ul>
@@ -174,7 +237,7 @@ export const HomeView: React.FC = () => {
                         <Header size="sm"> FPS: </Header>
                         { ts ? Math.round(frameCount / (Date.now() - ts) * 1000) : "None" }
                     </li>
-                    <li>
+                    <li className="flex justify-center">
                         {
                             ts !== null ?
                             <CirclesSVG 
@@ -183,7 +246,7 @@ export const HomeView: React.FC = () => {
                                 key={JSON.stringify(strokes)}
                             /> : <></>
                         }
-                    </li> 
+                    </li>
                 </ul>
             </div>
         </div>

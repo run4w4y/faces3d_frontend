@@ -5,11 +5,12 @@ import { Header } from './Header';
 
 interface SelectInputStreamProps {
     inputs: MediaDeviceInfo[],
-    setSelectedInput: (input: MediaDeviceInfo) => void;
+    setSelectedInput: (input: MediaDeviceInfo) => void,
+    disabled?: boolean
 }
 
 export const SelectInputStream: React.FC<SelectInputStreamProps> = ({
-    inputs, setSelectedInput
+    inputs, setSelectedInput, disabled
 }) => {
     const [ selected, setSelected ] = useState(inputs[0]);
 
@@ -33,6 +34,7 @@ export const SelectInputStream: React.FC<SelectInputStreamProps> = ({
             keyF={(item: MediaDeviceInfo) => item.deviceId}
             onChange={setSelected}
             label={<Header size="sm"> Select input device </Header>}
+            disabled={disabled}
         />
     );
 }

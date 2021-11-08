@@ -5,11 +5,12 @@ interface StyledSwtichProps {
     onChange?: (enabled: boolean) => void,
     defaultEnabled?: boolean,
     size?: number,
-    padding?: number
+    padding?: number,
+    disabled?: boolean
 }
 
 export const StyledSwitch: React.FC<StyledSwtichProps> = (
-    { defaultEnabled, onChange, size, padding, children }
+    { defaultEnabled, onChange, size, padding, children, disabled }
 ) => {
     const [ enabled, setEnabled ] = useState(defaultEnabled ?? false);
 
@@ -33,6 +34,7 @@ export const StyledSwitch: React.FC<StyledSwtichProps> = (
             height: `${(size ?? 34) + (padding ?? 2) * 2}px`,
             width: `${(size ?? 34) * 2 + (padding ?? 2) * 3}px`
         }}
+        disabled={disabled ?? false}
         >
             <span
             aria-hidden="true"

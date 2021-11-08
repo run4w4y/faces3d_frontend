@@ -8,11 +8,12 @@ interface StyledSelectProps<T> {
     renderF: (item: T, selected: boolean) => JSX.Element,
     keyF: (item: T) => string,
     onChange?: (item: T) => void,
-    label?: JSX.Element
+    label?: JSX.Element,
+    disabled?: boolean
 };
 
 export const StyledSelect = <T,>({
-    items, renderF, keyF, onChange, label
+    items, renderF, keyF, onChange, label, disabled
 }: PropsWithChildren<StyledSelectProps<T>>) => {
     const [ selected, setSelected ] = useState<T>(items[0]);
 
@@ -53,7 +54,7 @@ export const StyledSelect = <T,>({
     ));
 
     return (
-        <Listbox value={selected} onChange={setSelected}>
+        <Listbox value={selected} onChange={setSelected} disabled={disabled ?? false}>
             { label  
                 ? <Listbox.Label className="block text-sm font-medium text-gray-700 dark:text-gray-100"> {label} </Listbox.Label>
                 : <></>
