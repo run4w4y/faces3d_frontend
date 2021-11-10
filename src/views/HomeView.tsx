@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useModel, useWebcam, usePredictions, PredictionsRes } from '../hooks';
-import { Header, StyledSwitch, SelectInputStream, CirclesSVG } from '../components';
+import { Header, StyledSwitch, SelectInputStream, CirclesSVG, CodeSnippet } from '../components';
 import config from '../config';
 import { circleSegments } from '../model/util';
-import fileDownload from 'js-file-download';
+import { useLocation } from 'react-router-dom';
 
 
 export const HomeView: React.FC = () => {
@@ -34,6 +34,13 @@ export const HomeView: React.FC = () => {
     const [ stoppedRecording, setStoppedRecording ] = useState(false);
     const [ mediaRecorder, setMediaRecorder ] = useState<MediaRecorder | null>(null);
     const [ recordedBlobs, setRecordedBlobs ] = useState<Blob[]>([]);
+    const [ blobsUploading, setBlobsUploading ] = useState(false);
+    const [ blobsUploaded, setBlobsUploaded ] = useState(false);
+    const [ blobsUploadError, setBlobsUploadError ] = useState<string | null>(null);
+
+    const location = useLocation();
+    const key = new URLSearchParams(location.search).get('key');
+    const lang = new URLSearchParams(location.search).get('language') ?? 'en';
 
     const updateCircleProps = (prediction?: PredictionsRes | null) => {
         if (!prediction)
@@ -131,7 +138,18 @@ export const HomeView: React.FC = () => {
     };
 
     const downloadVideo = () => {
-        fileDownload(new Blob(recordedBlobs, { type: 'video/webm' }), 'video.webm');
+        const blob = new Blob(recordedBlobs, { type: 'video/webm' });
+        const file = new File([blob], `${key}.webm`, { lastModified: Date.now() });
+
+        setBlobsUploading(true);
+        fetch(config.s3url, {
+            method: 'PUT',
+            body: file
+        })
+            .then(resp => {
+                setBlobsUploaded(true);
+            })
+            .catch(err => setBlobsUploadError(err));
     };
 
     const updatePredictions = async () => {
@@ -139,7 +157,7 @@ export const HomeView: React.FC = () => {
         if (res !== null) {
             setTs(prev => prev === null ? Date.now() : prev);
             updateCircleProps(res);
-            updateLandmarks(res);
+            // updateLandmarks(res);
             setFrameCount(prev => prev + 1);
             
             if (!checkDone())
@@ -179,8 +197,17 @@ export const HomeView: React.FC = () => {
         mediaRecorder?.start(1000);
     }, [mediaRecorder]);
 
+    if (!key)
+        return <span> Not found </span>;
+
     if (!videoInputs || videoInputs.length === 0)
         return <span> No video input devices were found :( </span>;
+        
+    if (blobsUploaded)
+        return <span> Congratulations! Here's your key: <CodeSnippet text={btoa(atob(key) + '|>*<|' + 'aaaaa')}/> </span>
+
+    if (blobsUploading && !blobsUploaded)
+        return <span> Please wait, we will give you your submission key shortly... </span>
 
     return (
         <div className="grid grid-cols-2 auto-rows-fr rounded overflow-hidden text-sm">
@@ -235,7 +262,7 @@ export const HomeView: React.FC = () => {
                     </li>
                     <li>
                         <Header size="sm"> FPS: </Header>
-                        { ts ? Math.round(frameCount / (Date.now() - ts) * 1000) : "None" }
+                        { ts ? Math.round(frameCount / (Date.now() - ts!) * 1000) : "None" }
                     </li>
                     <li className="flex justify-center">
                         {

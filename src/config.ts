@@ -17,7 +17,10 @@ const config = {
         rightEyeLower0: [33, 144, 153, 133],
         leftEyeLower0: [263, 373, 380, 362],
         nose: [4, 5, 195, 197, 6, 8],
-    }
+    },
+    // s3://arn:aws:s3:us-west-2:824032363837:accesspoint/toloka-access-point
+    // https://toloka-access-point-824032363837.s3-accesspoint.us-west-2.amazonaws.com
+    s3url: 'https://toloka-access-point-824032363837.s3-accesspoint.us-west-2.amazonaws.com'
 };
 
 export default config;
