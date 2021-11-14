@@ -55,6 +55,7 @@
     "@types/stats.js": "^0.17.0",
     "@types/uuid": "^8.3.1",
     "autoprefixer": "^9.8.8",
+    "aws-amplify": "^4.3.6",
     "i18next": "^21.3.3",
     "i18next-browser-languagedetector": "^6.1.2",
     "js-file-download": "^0.4.12",

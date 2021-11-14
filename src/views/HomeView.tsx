@@ -139,12 +139,14 @@ export const HomeView: React.FC = () => {
 
     const downloadVideo = () => {
         const blob = new Blob(recordedBlobs, { type: 'video/webm' });
-        const file = new File([blob], `${key}.webm`, { lastModified: Date.now() });
 
         setBlobsUploading(true);
-        fetch(config.s3url, {
+        fetch(`${config.s3url}/${key}.webm`, {
             method: 'PUT',
-            body: file
+            body: blob,
+            headers: {
+                'Content-Type': 'video/webm'
+            }
         })
             .then(resp => {
                 setBlobsUploaded(true);

@@ -20,7 +20,8 @@ const config = {
     },
     // s3://arn:aws:s3:us-west-2:824032363837:accesspoint/toloka-access-point
     // https://toloka-access-point-824032363837.s3-accesspoint.us-west-2.amazonaws.com
-    s3url: 'https://toloka-access-point-824032363837.s3-accesspoint.us-west-2.amazonaws.com'
+    // s3url: 'https://toloka-access-point-824032363837.s3-accesspoint.us-west-2.amazonaws.com'
+    s3url: 'https://storage.yandexcloud.net/toloka-open/video'
 };
 
 export default config;
