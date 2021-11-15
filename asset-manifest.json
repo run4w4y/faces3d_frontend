@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/faces3d_frontend/static/css/main.3e208c6c.chunk.css",
+    "main.js": "/faces3d_frontend/static/js/main.a2a2b5b1.chunk.js",
+    "main.js.map": "/faces3d_frontend/static/js/main.a2a2b5b1.chunk.js.map",
+    "runtime-main.js": "/faces3d_frontend/static/js/runtime-main.a6b387af.js",
+    "runtime-main.js.map": "/faces3d_frontend/static/js/runtime-main.a6b387af.js.map",
+    "static/js/2.e2d83c8d.chunk.js": "/faces3d_frontend/static/js/2.e2d83c8d.chunk.js",
+    "static/js/2.e2d83c8d.chunk.js.map": "/faces3d_frontend/static/js/2.e2d83c8d.chunk.js.map",
+    "static/js/3.00a0eff9.chunk.js": "/faces3d_frontend/static/js/3.00a0eff9.chunk.js",
+    "static/js/3.00a0eff9.chunk.js.map": "/faces3d_frontend/static/js/3.00a0eff9.chunk.js.map",
+    "index.html": "/faces3d_frontend/index.html",
+    "static/css/main.3e208c6c.chunk.css.map": "/faces3d_frontend/static/css/main.3e208c6c.chunk.css.map",
+    "static/js/2.e2d83c8d.chunk.js.LICENSE.txt": "/faces3d_frontend/static/js/2.e2d83c8d.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.a6b387af.js",
+    "static/js/2.e2d83c8d.chunk.js",
+    "static/css/main.3e208c6c.chunk.css",
+    "static/js/main.a2a2b5b1.chunk.js"
+  ]
+}
