@@ -6,7 +6,7 @@ function App() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route exact path="/" component={HomeRoute} />
+        <Route path="/" component={HomeRoute} />
       </Switch>
     </BrowserRouter>
   );
