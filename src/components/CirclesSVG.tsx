@@ -3,15 +3,16 @@ import React from 'react';
 
 interface CirclesSVGProps {
     numberSegments: number,
-    strokes: string[]
+    strokes: string[],
+    size: number
 }
 
 export const CirclesSVG: React.FC<CirclesSVGProps> = ({
-    numberSegments, strokes
+    numberSegments, strokes, size
 }) => {
-    const circleRadius = 120;
-    const circleX = 150;
-    const circleY = 150;
+    const circleRadius = size / 2 - 30;
+    const circleX = size / 2;
+    const circleY = size / 2;
     const initialRotation = 360 / numberSegments;
 
     const dashArray = 2 * Math.PI * circleRadius;
@@ -38,7 +39,7 @@ export const CirclesSVG: React.FC<CirclesSVGProps> = ({
     }
 
     return (
-        <svg height="300" width="300" version="1.1" xmlns="http://www.w3.org/2000/svg">
+        <svg height={size} width={size} version="1.1" xmlns="http://www.w3.org/2000/svg">
             {/* <circle cx="150" cy="150" r="120" stroke="green" stroke-width="20" fill="transparent" /> */}
             {circles}
         </svg>

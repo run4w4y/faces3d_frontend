@@ -214,18 +214,59 @@ export const HomeView: React.FC<HomeViewProps> = ({ startedHook }) => {
         return <span> Congratulations! Here's your key: <CodeSnippet text={btoa(atob(key) + '|>*<|' + 'aaaaa')}/> </span>
 
     if (blobsUploading && !blobsUploaded)
-        return <span> Please wait, we will give you your submission key shortly... </span>
+        return <span> Please wait, we will give you your submission key shortly... </span>;
+    
+    const video = webcamRef.current?.getCanvas();
+    const videoW = video?.width ?? 0;
+    const videoH = video?.height ?? 0;
+    const videoRatio = videoW / videoH;
+    const containerW = containerRef.current?.offsetWidth ?? 0;
+    const containerH = containerW / videoRatio;
+    const webcamSize = 
+        videoRatio > 1
+            ? containerH
+            : containerW;
 
     return (
-        <div className="grid grid-cols-2 auto-rows-fr rounded overflow-hidden text-sm">
+        <div className="grid grid-cols-2 rounded overflow-hidden text-sm">
             <div className="lg:col-span-1 col-span-2 relative">
                 {
                     userReady ?
                     <>
-                    <div ref={containerRef}> { webcamElement } </div>
-                    <div className="w-full z-10 absolute top-0 left-0">
-                        <canvas ref={canvasRef} />
-                    </div>
+                        <div ref={containerRef} className="relative w-full flex items-center justify-center"> 
+                            <div 
+                                style={{
+                                    width: webcamSize + 50,
+                                    height: webcamSize + 50,
+                                    marginLeft: (containerW - webcamSize) / 2 - 20,
+                                    marginTop: (containerH - webcamSize) / 2 - 20,
+                                }}
+                                className="absolute left-0 top-0 z-10"
+                            >
+                                <CirclesSVG
+                                    strokes={strokes}
+                                    numberSegments={config.NUM_SEGMENTS}
+                                    key={JSON.stringify(strokes)}
+                                    size={webcamSize + 40}
+                                /> 
+                            </div>
+                            <div style={{ width: webcamSize, height: webcamSize }} className="relative rounded-full overflow-hidden">
+                                <div 
+                                    style={{ 
+                                        width: videoRatio > 1 ? containerW : 'auto',
+                                        marginLeft: videoRatio > 1 ? (webcamSize - containerW) / 2 : 0,
+                                        height: videoRatio <= 1 ? containerH : 'auto',
+                                        marginTop: videoRatio <= 1 ? (webcamSize - containerH) / 2 : 0, 
+                                    }} 
+                                    className="absolute left-0 top-0"
+                                >
+                                    { webcamElement } 
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-full z-10 absolute top-0 left-0">
+                            <canvas ref={canvasRef} />
+                        </div>
                     </>
                     :
                     <div 
@@ -272,14 +313,15 @@ export const HomeView: React.FC<HomeViewProps> = ({ startedHook }) => {
                         { ts ? Math.round(frameCount / (Date.now() - ts!) * 1000) : "None" }
                     </li>
                     <li className="flex justify-center">
-                        {
+                        {/* {
                             ts !== null ?
                             <CirclesSVG 
                                 strokes={strokes}
                                 numberSegments={config.NUM_SEGMENTS}
                                 key={JSON.stringify(strokes)}
+                                size={500}
                             /> : <></>
-                        }
+                        } */}
                     </li>
                 </ul>
             </div>
