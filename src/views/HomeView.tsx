@@ -5,8 +5,11 @@ import config from '../config';
 import { circleSegments } from '../model/util';
 import { useLocation } from 'react-router-dom';
 
+interface HomeViewProps {
+    startedHook?: () => void,
+};
 
-export const HomeView: React.FC = () => {
+export const HomeView: React.FC<HomeViewProps> = ({ startedHook }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     
@@ -170,8 +173,10 @@ export const HomeView: React.FC = () => {
     };
 
     useEffect(() => {
-        if (userReady && streamLoaded)
+        if (userReady && streamLoaded) {
             setTimeout(updatePredictions, 1500);
+            startedHook && setTimeout(startedHook, 1500);
+        }
     }, [streamLoaded, userReady]);
 
     useEffect(() => {

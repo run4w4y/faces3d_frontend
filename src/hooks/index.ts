@@ -4,3 +4,4 @@ export * from './usePredictions';
 export * from './useVideoStreams';
 export * from './useWebcam';
 export * from './useVideoPermissions'
+export * from './useTimer';
