@@ -7,9 +7,10 @@ import { useLocation } from 'react-router-dom';
 
 interface HomeViewProps {
     startedHook?: () => void,
+    taskDoneHook?: () => void,
 };
 
-export const HomeView: React.FC<HomeViewProps> = ({ startedHook }) => {
+export const HomeView: React.FC<HomeViewProps> = ({ startedHook, taskDoneHook }) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     
@@ -153,6 +154,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ startedHook }) => {
         })
             .then(resp => {
                 setBlobsUploaded(true);
+                taskDoneHook && taskDoneHook();
             })
             .catch(err => setBlobsUploadError(err));
     };

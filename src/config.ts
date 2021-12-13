@@ -19,7 +19,7 @@ const config = {
         nose: [4, 5, 195, 197, 6, 8],
     },
     s3url: 'https://storage.yandexcloud.net/toloka-open/video',
-    timerLimit: 15,
+    timerLimit: 20,
 };
 
 export default config;
