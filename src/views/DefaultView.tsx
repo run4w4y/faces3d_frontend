@@ -27,7 +27,7 @@ export const DefaultView: React.FC = () => {
                     : null}
                 </div>
                 {
-                    !timedOut && !taskDone ?
+                    !timedOut || taskDone ?
                     (permissions === PermissionsState.NoResponse ?
                     "Please allow the usage of camera" : permissions === PermissionsState.Success ?
                     <HomeView startedHook={() => startTimer()} taskDoneHook={() => setTaskDone(true)}/> : permissions === PermissionsState.Denied ?
