@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/faces3d_frontend/static/css/main.83ef7bea.chunk.css",
-    "main.js": "/faces3d_frontend/static/js/main.a8797ae6.chunk.js",
-    "main.js.map": "/faces3d_frontend/static/js/main.a8797ae6.chunk.js.map",
+    "main.js": "/faces3d_frontend/static/js/main.3bd76624.chunk.js",
+    "main.js.map": "/faces3d_frontend/static/js/main.3bd76624.chunk.js.map",
     "runtime-main.js": "/faces3d_frontend/static/js/runtime-main.07ccdd98.js",
     "runtime-main.js.map": "/faces3d_frontend/static/js/runtime-main.07ccdd98.js.map",
     "static/js/2.ee5c001c.chunk.js": "/faces3d_frontend/static/js/2.ee5c001c.chunk.js",
@@ -17,6 +17,6 @@
     "static/js/runtime-main.07ccdd98.js",
     "static/js/2.ee5c001c.chunk.js",
     "static/css/main.83ef7bea.chunk.css",
-    "static/js/main.a8797ae6.chunk.js"
+    "static/js/main.3bd76624.chunk.js"
   ]
 }
