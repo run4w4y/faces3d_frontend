@@ -1,5 +1,5 @@
 const config = {
-    NUM_SEGMENTS: 32,
+    NUM_SEGMENTS: 16,
     VISIBILITY_RATE: 0.4,
     CONFIDENCE_RATE: 0.95,
     MIN_POSITION: 10,
